@@ -18,11 +18,11 @@ print ("#"*10)
 print("\n")
 
 counter = LeafCounterVisitor()
-root.receber_visitor(counter)
+root.accept(counter)
 print(counter.count)
 
 print ("#"*10)
 print("\n")
 
 regras = RulesReportVisitor()
-root.receber_visitor(regras)
+root.accept(regras)
