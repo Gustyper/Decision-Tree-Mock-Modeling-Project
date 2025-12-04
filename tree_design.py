@@ -36,6 +36,49 @@ class PreOrderIterator(TreeIterator):
 ###############################################################  
 
 
+class NodeVisitor(ABC):
+    """
+    Interface Visitor: Declara métodos de visita para cada tipo concreto de elemento.
+    """
+    @abstractmethod
+    def visit_decision_node(self, node: DecisionNode) -> None: ...
+
+    @abstractmethod
+    def visit_leaf_node(self, node: LeafNode) -> None: ...
+
+
+class LeafCounterVisitor(NodeVisitor):
+    """
+    Visitor que percorre a árvore para contar quantos nós folhas existem.
+    """
+    def __init__(self) -> None:
+        self.count = 0
+
+    def visit_decision_node(self, node: DecisionNode) -> None:
+        for child in node.get_children():
+            child.receber_visitor(self)
+
+    def visit_leaf_node(self, node: LeafNode) -> None:
+        print(f"[Visitor] Folha encontrada: {node.value}")
+        self.count += 1
+
+
+class RulesReportVisitor(NodeVisitor):
+    """
+    Visitor que extrai apenas as regras de decisão
+    """
+    def visit_decision_node(self, node: DecisionNode) -> None:
+        print(f"[Relatório] Regra de Decisão Identificada: '{node.condition}'")
+        for child in node.get_children():
+            child.receber_visitor(self)
+
+    def visit_leaf_node(self, node: LeafNode) -> None:
+        pass
+
+
+###############################################################
+
+
 class Node(ABC):
     """
     Componente base do padrão Composite.
@@ -43,6 +86,10 @@ class Node(ABC):
         
     @abstractmethod
     def add_child(self, child: Node) -> None: ...
+
+    # Método pro visitor
+    @abstractmethod
+    def receber_visitor(self, visitor: NodeVisitor) -> None: ...
 
     @abstractmethod
     def __str__(self) -> str: ...
@@ -65,6 +112,9 @@ class DecisionNode(Node):
     def get_children(self) -> List[Node]: 
         return self._children
     
+    def receber_visitor(self, visitor: NodeVisitor) -> None:
+        visitor.visit_decision_node(self)
+    
     def __str__(self) -> str:
         return f"[Decision] {self.condition}"
 
@@ -77,6 +127,9 @@ class LeafNode(Node):
     
     def add_child(self, child: Node) -> None:
         print(f"[Warn] Tentativa de adicionar filho em Folha: {self.value}")
+
+    def receber_visitor(self, visitor: NodeVisitor) -> None:
+        visitor.visit_leaf_node(self)
     
     def __str__(self) -> str:
         return f"[Leaf] Resultado: {self.value}"

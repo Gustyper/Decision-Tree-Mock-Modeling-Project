@@ -13,3 +13,16 @@ root.add_child(right)
 
 for node in root:
     print(node)
+
+print ("#"*10)
+print("\n")
+
+counter = LeafCounterVisitor()
+root.receber_visitor(counter)
+print(counter.count)
+
+print ("#"*10)
+print("\n")
+
+regras = RulesReportVisitor()
+root.receber_visitor(regras)
