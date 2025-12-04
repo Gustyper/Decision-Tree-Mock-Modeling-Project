@@ -1,8 +1,15 @@
-from tree_design import *
+from tree_design import* 
 
-noD = DecisionNode()
-noF = LeafNode("teste")
+root = DecisionNode("Nó Decisão 1")
 
-noD.add_child(noF)
+left = DecisionNode("Nó Decisão 2")
+left.add_child(LeafNode("Folha A"))
+left.add_child(LeafNode("Folha B"))
 
-# noF.add_child(noF)
+right = LeafNode("Classe C")
+
+root.add_child(left)
+root.add_child(right)
+
+for node in root:
+    print(node)
