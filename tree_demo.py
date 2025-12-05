@@ -1,28 +1,45 @@
-from tree_design import* 
+from tree_design import *
 
-root = DecisionNode("Nó Decisão 1")
+def test_manual_construction():
+    print("Construção Manual")
+    print("#" * 60)
+    root = DecisionNode("Nó Decisão 1 (Raiz)")
+    
+    left = DecisionNode("Nó Decisão 2 (Esq)")
+    left.add_child(LeafNode("Folha A"))
+    left.add_child(LeafNode("Folha B"))
+    
+    right = LeafNode("Classe C (Dir)")
+    
+    root.add_child(left)
+    root.add_child(right)
 
-left = DecisionNode("Nó Decisão 2")
-left.add_child(LeafNode("Folha A"))
-left.add_child(LeafNode("Folha B"))
+    print("\nNavegando na árvore:")
+    for node in root:
+        print(f" -> {node}")
 
-right = LeafNode("Classe C")
+    print("\nContando Folhas:")
+    counter = LeafCounterVisitor()
+    root.accept(counter)
+    print(f" -> Total de folhas: {counter.count}")
 
-root.add_child(left)
-root.add_child(right)
+    print("\n[Visitor] Relatório de Regras:")
+    regras = RulesReportVisitor()
+    root.accept(regras)
 
-for node in root:
-    print(node)
 
-print ("#"*10)
-print("\n")
+def test_automated_builder():
+    print("Construção Automática")
+    print("#" * 60)
+    
+    builder = TreeBuilder()
+    
+    tree_root = builder.build_tree(max_depth=2)
+    
+    viz = RulesReportVisitor()
+    if tree_root:
+        tree_root.accept(viz)
 
-counter = LeafCounterVisitor()
-root.accept(counter)
-print(counter.count)
-
-print ("#"*10)
-print("\n")
-
-regras = RulesReportVisitor()
-root.accept(regras)
+if __name__ == "__main__":
+    test_manual_construction()
+    test_automated_builder()

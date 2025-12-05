@@ -133,3 +133,65 @@ class LeafNode(Node):
     
     def __str__(self) -> str:
         return f"[Leaf] Resultado: {self.value}"
+    
+
+##############################################################################
+
+class BuilderState(ABC):
+    """
+    Interface State: Define o comportamento abstrato para os estados de construção.
+    """
+    @abstractmethod
+    def handle(self, builder: TreeBuilder, depth: int, max_depth: int) -> Node: ...
+
+
+class TreeBuilder:
+    """
+    Context do padrão State. Mantém a referência para o estado atual.
+    """
+    def __init__(self) -> None:
+        self._state: BuilderState = SplittingState()
+        
+    def set_state(self, state: BuilderState) -> None:
+        print(f"[State Change] {type(self._state).__name__} -> {type(state).__name__}")
+        self._state = state
+        
+    def build_tree(self, max_depth: int) -> Node:
+        print(f"--- Iniciando Construção (Max Depth: {max_depth}) ---")
+        return self._state.handle(self, current_depth=0, max_depth=max_depth)
+
+
+class SplittingState(BuilderState):
+    """
+    Estado de Divisão.
+    """
+    def handle(self, builder: TreeBuilder, current_depth: int, max_depth: int) -> Node:
+        
+        if current_depth >= max_depth:
+            print(f"[Splitting] Profundidade {current_depth} atingida. Mudando para Stopping.")
+            builder.set_state(StoppingState())
+            return builder._state.handle(builder, current_depth, max_depth)
+        
+        print(f"[Splitting] Criando nó na profundidade {current_depth}...")
+        node = DecisionNode(f"Feature_X > {current_depth * 10}")
+        
+        left_child = builder._state.handle(builder, current_depth + 1, max_depth)
+        right_child = builder._state.handle(builder, current_depth + 1, max_depth)
+        
+        node.add_child(left_child)
+        node.add_child(right_child)
+        
+        return node
+
+
+class StoppingState(BuilderState):
+    """
+    Estado de Parada.
+    """
+    def handle(self, builder: TreeBuilder, current_depth: int, max_depth: int) -> Node:
+        return LeafNode(value=f"Classe_{current_depth}")
+
+
+class PruningState(BuilderState):
+    def handle(self, builder: TreeBuilder, current_depth: int, max_depth: int) -> Node:
+        return LeafNode("Podada")
