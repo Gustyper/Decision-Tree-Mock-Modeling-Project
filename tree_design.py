@@ -157,7 +157,7 @@ class TreeBuilder:
         self._state = state
         
     def build_tree(self, max_depth: int) -> Node:
-        print(f"--- Iniciando Construção (Max Depth: {max_depth}) ---")
+        print(f"Iniciando Construção (Max Depth: {max_depth})")
         return self._state.handle(self, current_depth=0, max_depth=max_depth)
 
 
@@ -175,8 +175,8 @@ class SplittingState(BuilderState):
         print(f"[Splitting] Criando nó na profundidade {current_depth}...")
         node = DecisionNode(f"Feature_X > {current_depth * 10}")
         
-        left_child = builder._state.handle(builder, current_depth + 1, max_depth)
-        right_child = builder._state.handle(builder, current_depth + 1, max_depth)
+        left_child = self.handle(builder, current_depth + 1, max_depth)
+        right_child = self.handle(builder, current_depth + 1, max_depth)
         
         node.add_child(left_child)
         node.add_child(right_child)

@@ -16,12 +16,12 @@ def test_manual_construction():
 
     print("\nNavegando na árvore:")
     for node in root:
-        print(f" -> {node}")
+        print(f"{node}")
 
     print("\nContando Folhas:")
     counter = LeafCounterVisitor()
     root.accept(counter)
-    print(f" -> Total de folhas: {counter.count}")
+    print(f"Total de folhas: {counter.count}")
 
     print("\n[Visitor] Relatório de Regras:")
     regras = RulesReportVisitor()
@@ -34,7 +34,7 @@ def test_automated_builder():
     
     builder = TreeBuilder()
     
-    tree_root = builder.build_tree(max_depth=2)
+    tree_root = builder.build_tree(max_depth=3)
     
     viz = RulesReportVisitor()
     if tree_root:
